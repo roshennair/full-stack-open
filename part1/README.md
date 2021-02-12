@@ -13,6 +13,6 @@
 - [x] 1.9: Unicafe, step4
 - [x] 1.10: Unicafe, step5
 - [x] 1.11: Unicafe, step6
-- [ ] 1.12: Anecdotes, step1
-- [ ] 1.13: Anecdotes, step2
-- [ ] 1.14: Anecdotes, step3
+- [x] 1.12: Anecdotes, step1
+- [x] 1.13: Anecdotes, step2
+- [x] 1.14: Anecdotes, step3
