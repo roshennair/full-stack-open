@@ -20,3 +20,5 @@
 - [x] 2.16: The phonebook, step8
 - [x] 2.17: The phonebook, step9
 - [x] 2.18: The phonebook, step10
+- [x] 2.19: The phonebook, step11
+- [x] 2.20: The phonebook, step12
