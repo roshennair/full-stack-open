@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'
+import phonebook from './services/phonebook';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
@@ -13,9 +13,9 @@ const App = () => {
 
 	// Register effect hook to fetch persons data once, after initial render
 	useEffect(() => {
-		axios
-			.get('http://localhost:3001/persons')
-			.then(response => setPersons(response.data));
+		phonebook
+			.getAll()
+			.then(initialPersons => setPersons(initialPersons));
 	}, []);
 
 	// Update newName according to form input
@@ -27,23 +27,63 @@ const App = () => {
 	// Update searchTerm according to the search field
 	const handleSearchChange = event => setSearchTerm(event.target.value);
 
+	// Update a person's number
+	const updateNumber = () => {
+		// Find person
+		const oldPerson = persons.find(person => person.name === newName);
+		// Create updated person object
+		const updatedPerson = {
+			...oldPerson,
+			number: newNumber
+		}
+		// Make PUT request to DB
+		phonebook
+			.update(oldPerson.id, updatedPerson)
+			.then(returnedPerson => {
+				// Create new array containing updated person data
+				setPersons(persons.map(person => person.id === returnedPerson.id ? returnedPerson : person));
+				setNewName('');
+				setNewNumber('');
+			})
+	}
+
 	// Add new person to persons array
 	const addNewPerson = event => {
 		// Prevent page reload
 		event.preventDefault();
 		// Check if name already exists in persons array
 		if (persons.some(person => person.name === newName)) {
-			alert(`${newName} is already added to phonebook`);
+			if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+				updateNumber()
+			}
 		} else {
 			// Create newPerson and update persons array
 			const newPerson = {
 				name: newName,
 				number: newNumber
 			};
-			setPersons(persons.concat(newPerson));
-			// Reset newName and newNumber variables
-			setNewName('');
-			setNewNumber('');
+			phonebook
+				.create(newPerson)
+				.then(returnedPerson => {
+					// Create new array containing new person
+					setPersons(persons.concat(returnedPerson));
+					// Reset newName and newNumber variables
+					setNewName('');
+					setNewNumber('');
+				})
+		}
+	}
+
+	// Delete a single person
+	const deletePerson = personToDelete => {
+		if (window.confirm(`Delete ${personToDelete.name}?`)) {
+			// Delete person from DB
+			phonebook
+				.remove(personToDelete.id)
+				.then(() => {
+					// Update persons list
+					setPersons(persons.filter(person => person.id !== personToDelete.id));
+				});
 		}
 	}
 
@@ -66,7 +106,7 @@ const App = () => {
 				onNumberChange={handleNumberChange}
 			/>
 			<h3>Numbers</h3>
-			<Persons persons={personsToShow} />
+			<Persons persons={personsToShow} deletePerson={deletePerson} />
 		</div>
 	);
 }

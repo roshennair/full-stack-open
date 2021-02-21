@@ -16,3 +16,7 @@
 - [x] 2.12: Data for countries, step1
 - [x] 2.13: Data for countries, step2
 - [x] 2.14: Data for countries, step3
+- [x] 2.15: The phonebook, step7
+- [x] 2.16: The phonebook, step8
+- [x] 2.17: The phonebook, step9
+- [x] 2.18: The phonebook, step10
